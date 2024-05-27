@@ -10,7 +10,8 @@ namespace GildedRose.Console
 {
     public interface IQualityStrategy
     {
-        void UpdateQuality(Item item); 
+        IQualityStrategy UpdateQuality(Item item);
+        IQualityStrategy UpdateSellIn(Item item);
 
     }
 
@@ -38,19 +39,33 @@ namespace GildedRose.Console
             return 1;
         }
 
-        public void UpdateQuality(Item item)
+        public IQualityStrategy UpdateQuality(Item item)
         {
             item.Quality -= CalcDecrease(item.SellIn);
             CheckBounds(item, 0, 50);
+            return this;
+        }
+
+        public IQualityStrategy UpdateSellIn(Item item)
+        {
+            item.SellIn--;
+            return this;
         }
     }
 
     public class AgedBrieQualityStrategy : IQualityStrategy
     {
-        public void UpdateQuality(Item item)
+        public IQualityStrategy UpdateQuality(Item item)
         {
-            item.Quality += 1;
+            item.Quality++;
             DefaultQualityStrategy.CheckBounds(item, 0, 50);
+            return this;
+        }
+
+        public IQualityStrategy UpdateSellIn(Item item)
+        {
+            item.SellIn--;
+            return this;
         }
     }
 
@@ -60,10 +75,16 @@ namespace GildedRose.Console
         public SulfurasQualityStrategy()
         {
         }
-        public void UpdateQuality(Item item)
+        public IQualityStrategy UpdateQuality(Item item)
         {
             // Sulfras never decreases in quality, and should never be sold
             item.Quality = 80;
+            return this;
+        }
+        public IQualityStrategy UpdateSellIn(Item item)
+        {
+            // Sulfras should never be sold
+            return this;
         }
     }
 
@@ -76,7 +97,7 @@ namespace GildedRose.Console
         /// </summary>
         /// <param name="item"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void UpdateQuality(Item item)
+        public IQualityStrategy UpdateQuality(Item item)
         {
             if (item.SellIn <= 0)
             {
@@ -94,8 +115,13 @@ namespace GildedRose.Console
                 item.Quality++;
 
             DefaultQualityStrategy.CheckBounds(item, 0, 50);
+            return this;
+        }
 
-
+        public IQualityStrategy UpdateSellIn(Item item)
+        {
+            item.SellIn--;
+            return this;
         }
     }
 
@@ -106,10 +132,17 @@ namespace GildedRose.Console
         /// </summary>
         /// <param name="item"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public void UpdateQuality(Item item)
+        public IQualityStrategy UpdateQuality(Item item)
         {
             item.Quality -= 2*DefaultQualityStrategy.CalcDecrease(item.SellIn);
             DefaultQualityStrategy.CheckBounds(item, 0, 50);
+            return this;
+        }
+
+        public IQualityStrategy UpdateSellIn(Item item)
+        {
+            item.SellIn--;
+            return this;
         }
     }
 
