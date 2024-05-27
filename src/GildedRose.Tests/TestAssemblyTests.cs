@@ -41,5 +41,33 @@ namespace GildedRose.Tests
             Assert.IsType<ConjuredQualityStrategy>(strategy);
 
         }
-    }
+
+        [Fact]
+        public void TestDefaultQualityStrategy()
+        { 
+            // The default strategy is to decrease quality by 1
+            var item = new Item { Name = "+5 Dexterity Vest", SellIn = 10, Quality = 20 };
+            var strategy = new DefaultQualityStrategy();
+            strategy.UpdateQuality(item);
+            Assert.Equal(19, item.Quality);
+
+            // Quality should never be negative
+            item = new Item { Name = "+5 Dexterity Vest", SellIn = 10, Quality = 0 };
+            strategy.UpdateQuality(item);
+            Assert.Equal(0, item.Quality);
+
+            // Quality should decrease by 2 after sell by date
+            item = new Item { Name = "+5 Dexterity Vest", SellIn = 0, Quality = 20 };
+            strategy.UpdateQuality(item);
+            Assert.Equal(18, item.Quality);
+
+            // But never be negative
+            strategy = new DefaultQualityStrategy();
+            item = new Item { Name = "+5 Dexterity Vest", SellIn = 0, Quality = 1 };
+            strategy.UpdateQuality(item);
+            Assert.Equal(0, item.Quality);
+
+
+        }
+     }
 }
