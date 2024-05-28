@@ -29,6 +29,10 @@ namespace GildedRose.Console
                 item.Quality = highest;
             }
         }
+        public static void DecreaseSellInByOne(Item item)
+        {
+            item.SellIn--;
+        }
 
         public static int CalcDecrease(int sellIn)
         {
@@ -48,7 +52,7 @@ namespace GildedRose.Console
 
         public IQualityStrategy UpdateSellIn(Item item)
         {
-            item.SellIn--;
+            DecreaseSellInByOne(item);
             return this;
         }
     }
@@ -64,7 +68,7 @@ namespace GildedRose.Console
 
         public IQualityStrategy UpdateSellIn(Item item)
         {
-            item.SellIn--;
+            DefaultQualityStrategy.DecreaseSellInByOne(item);
             return this;
         }
     }
@@ -99,14 +103,17 @@ namespace GildedRose.Console
         /// <exception cref="NotImplementedException"></exception>
         public IQualityStrategy UpdateQuality(Item item)
         {
+            // Quality drops to 0 after the concert
             if (item.SellIn <= 0)
             {
                 item.Quality = 0;
             }
+            // Quality increases by 3 when there are 5 days or less
             if (item.SellIn >0 && item.SellIn <= 5)
             {
                 item.Quality += 3;
             }
+            // Quality increases by 3 when there are 10 days or less
             if (item.SellIn > 5 && item.SellIn <= 10)
             {
                 item.Quality += 2;
@@ -120,7 +127,7 @@ namespace GildedRose.Console
 
         public IQualityStrategy UpdateSellIn(Item item)
         {
-            item.SellIn--;
+            DefaultQualityStrategy.DecreaseSellInByOne(item);
             return this;
         }
     }
@@ -141,7 +148,7 @@ namespace GildedRose.Console
 
         public IQualityStrategy UpdateSellIn(Item item)
         {
-            item.SellIn--;
+            DefaultQualityStrategy.DecreaseSellInByOne(item);
             return this;
         }
     }
